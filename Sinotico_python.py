@@ -17,29 +17,31 @@ Intervalo = 0.1
 Tempo_Anterior = 0
 
 
-#Tenta comunicação  inicial com Arduinotry:
+#Tenta comunicação  inicial com Arduino
+try:
     ser = serial.Serial(port='COM3', baudrate=9600,timeout='1')
     flag = 1
-    except:
+except:
     print("Não há comunicação serial, tente novamente")
-    flag = 0    while(flag == 0):
+    flag = 0    
+    while(flag == 0):
         try:
             ser = serial.Serial(port='COM3', baudrate=9600)
             flag = 1        
-       except:
+        except:
             print("Reconnecte o dispositivo...") #Tenta comunicação inicial com Servidor
-            try:
-                conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
-                ql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis    
-                sql1_1 = conn.cursor()  # consulta tempo    
-                sql2_2 = conn.cursor()  # consulta temperatura    
-                sql3_3 = conn.cursor()  # consulta nivel    
-                sql4_4 = conn.cursor()  # consutla vazao    
-                sql5_5 = conn.cursor()  # consulta pressao    
-                flag2 = 1
-             except:
-                flag2 = 0    
-                print("Não foi possivel se conectar ao banco de dados, restart o servidor.")
+                try:
+                    conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
+                    ql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis    
+                    sql1_1 = conn.cursor()  # consulta tempo    
+                    sql2_2 = conn.cursor()  # consulta temperatura    
+                    sql3_3 = conn.cursor()  # consulta nivel    
+                    sql4_4 = conn.cursor()  # consutla vazao    
+                    sql5_5 = conn.cursor()  # consulta pressao    
+                    flag2 = 1
+                except:
+                    flag2 = 0    
+                    print("Não foi possivel se conectar ao banco de dados, restart o servidor.")
     while (flag2 == 0):
         try:
             conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
@@ -52,6 +54,7 @@ Tempo_Anterior = 0
             flag2 = 1        
          except:
             print("Não foi possivel se conectar ao banco de dados, restart o servidor.")
+            
             
 while (True):
     now = str(datetime.now())
