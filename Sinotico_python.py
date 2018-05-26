@@ -1,45 +1,65 @@
 
 import serial
-
 import pymysql
 from builtins import print
 from datetime import datetime
 
 
 # ---------------------------Variaveis Global----------------------------------------------------#
-indice_1 = "temperatura"indice_2 = "nivel"indice_3 = "vazao"indice_4 = "pressao"rg = '0123456789'condicao = TrueIntervalo = 0.1Tempo_Anterior = 0
 
-
-
+indice_1 = "temperatura"
+indice_2 = "nivel"
+indice_3 = "vazao"
+indice_4 = "pressao"
+rg = '0123456789'
+condicao = True
+Intervalo = 0.1
+Tempo_Anterior = 0
 
 
 #Tenta comunicação  inicial com Arduinotry:
     ser = serial.Serial(port='COM3', baudrate=9600,timeout='1')
-    flag = 1except:
+    flag = 1
+    except:
     print("Não há comunicação serial, tente novamente")
     flag = 0    while(flag == 0):
         try:
             ser = serial.Serial(port='COM3', baudrate=9600)
-            flag = 1        except:
-            print("Reconnecte o dispositivo...")
-
-#Tenta comunicação inicial com Servidortry:
-    conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
-    sql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis    sql1_1 = conn.cursor()  # consulta tempo    sql2_2 = conn.cursor()  # consulta temperatura    sql3_3 = conn.cursor()  # consulta nivel    sql4_4 = conn.cursor()  # consutla vazao    sql5_5 = conn.cursor()  # consulta pressao    flag2 = 1except:
-    flag2 = 0    print("Não foi possivel se conectar ao banco de dados, restart o servidor.")
+            flag = 1        
+       except:
+            print("Reconnecte o dispositivo...") #Tenta comunicação inicial com Servidor
+            try:
+                conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
+                ql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis    
+                sql1_1 = conn.cursor()  # consulta tempo    
+                sql2_2 = conn.cursor()  # consulta temperatura    
+                sql3_3 = conn.cursor()  # consulta nivel    
+                sql4_4 = conn.cursor()  # consutla vazao    
+                sql5_5 = conn.cursor()  # consulta pressao    
+                flag2 = 1
+             except:
+                flag2 = 0    
+                print("Não foi possivel se conectar ao banco de dados, restart o servidor.")
     while (flag2 == 0):
         try:
             conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
-            sql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis            sql1_1 = conn.cursor()  # consulta tempo            sql2_2 = conn.cursor()  # consulta temperatura            sql3_3 = conn.cursor()  # consulta nivel            sql4_4 = conn.cursor()  # consutla vazao            sql5_5 = conn.cursor()  # consulta pressao            flag2 = 1        except:
+            sql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis            
+            sql1_1 = conn.cursor()  # consulta tempo            
+            sql2_2 = conn.cursor()  # consulta temperatura            
+            sql3_3 = conn.cursor()  # consulta nivel            
+            sql4_4 = conn.cursor()  # consutla vazao            
+            sql5_5 = conn.cursor()  # consulta pressao            
+            flag2 = 1        
+         except:
             print("Não foi possivel se conectar ao banco de dados, restart o servidor.")
-
-
+            
 while (True):
     now = str(datetime.now())
     palavra = ser.readline(40)
     teste = str('\_r\_n').replace("_", "")
     teste_2 = ("_'_").replace('_', "")
-    texto = str(palavra).replace(teste, " ").replace('b', "").replace(teste_2,'') # valor deixa de existir apos o print    texto_Apenas = str(palavra).replace(teste, " ").replace('b', "").replace(teste_2, '')
+    texto = str(palavra).replace(teste, " ").replace('b', "").replace(teste_2,'') # valor deixa de existir apos o print    
+    texto_Apenas = str(palavra).replace(teste, " ").replace('b', "").replace(teste_2, '')
     if indice_1 in texto_Apenas:
         temp = texto_Apenas
         for i in range(len(temp)):
@@ -68,7 +88,8 @@ while (True):
                 pres = pres.replace(pres[i], " ")
                 valor_pressao = (pres).replace(" ", "")
                 pressao = valor_pressao
-    #Controle de tempo    now = str(datetime.now())
+    #Controle de tempo    
+    now = str(datetime.now())
     Tempo_Segundo = datetime.now()
     Tempo_Atual = Tempo_Segundo.second
     Controle_Tempo = (Tempo_Atual - Tempo_Anterior)
@@ -97,5 +118,11 @@ while (True):
         except:
             try:
                 conn = pymysql.connect(host='localhost', user='root', password='', db='cadastro')
-                sql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis                sql1_1 = conn.cursor()  # consulta tempo                sql2_2 = conn.cursor()  # consulta temperatura                sql3_3 = conn.cursor()  # consulta nivel                sql4_4 = conn.cursor()  # consutla vazao                sql5_5 = conn.cursor()  # consulta pressao            except:
+                sql1 = conn.cursor()  # Inserir o TimeStamp e demais variaveis                
+                sql1_1 = conn.cursor()  # consulta tempo                
+                sql2_2 = conn.cursor()  # consulta temperatura                
+                sql3_3 = conn.cursor()  # consulta nivel                
+                sql4_4 = conn.cursor()  # consutla vazao                
+                sql5_5 = conn.cursor()  # consulta pressao            
+            except:
                 print("Erro na consulta, tentando se reconectar o Servidor")
